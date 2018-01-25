@@ -65,7 +65,8 @@ os.remove('charg.txt.tmp')
 os.remove('scf.txt.tmp2')
 os.remove('scf.txt.tmp')
 
-# Second part of the script numerates nonzero fragments
+# Second part of the script numerates nonzero fragments.
+# Prints indat for negative, positive and zero-charge fragments. 
 
 a1 = open('charg.txt', 'r')
 a2 = open('charg_list.txt', 'w')
@@ -91,19 +92,77 @@ f4 = open('fragments_listing.txt', 'w')
 f3 = list(enumerate(arr))
 print >> f4, f3
 
+arr2 = []
+f5 = open('positive_charged_fragments_id.txt', 'w')
+for i, j in f3:
+    if j == '1':
+     arr2.append(i)
+     
 f5 = open('positive_charged_fragments_id.txt', 'w')
 for i, j in f3:
     if j == '1':
      print >> f5, i+1
+
+arr3 = []
+f6 = open('negative_charged_fragments_id.txt', 'w')
+for i, j in f3:
+    if j == '-1':
+     arr3.append(i)          
      
 f6 = open('negative_charged_fragments_id.txt', 'w')
 for i, j in f3:
     if j == '-1':
      print >> f6, i+1
-     
+          
 f4.close()
 f5.close()
 f6.close()
+
+z1 = open('indat_list_positive.txt','w')
+f7 = open('indat_list.txt')
+lines=f7.readlines()
+for i in arr2:
+    print >> z1, lines[i]
+    
+z1.close()
+f7.close()
+
+z2 = open('indat_list_negative.txt','w')
+f7 = open('indat_list.txt')
+lines=f7.readlines()
+for i in arr3:
+    print >> z2, lines[i]
+    
+z2.close()
+f7.close()
+
+f4 = open('fragments_listing.txt', 'w')
+f3 = list(enumerate(arr))
+print >> f4, f3
+
+arr4 = []
+f8 = open('zero_charged_fragments_id.txt', 'w')
+for i, j in f3:
+    if j == '0':
+     arr4.append(i)          
+     
+f9 = open('zero_charged_fragments_id.txt', 'w')
+for i, j in f3:
+    if j == '0':
+     print >> f9, i+1
+          
+f4.close()
+f8.close()
+f9.close()
+
+x2 = open('indat_list_zero.txt','w')
+x7 = open('indat_list.txt')
+lines=x7.readlines()
+for i in arr4:
+    print >> x2, lines[i]
+    
+x2.close()
+f7.close()
 
 os.remove('charg_list.txt')
 os.remove('charg_formated.txt')
