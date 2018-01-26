@@ -1,4 +1,41 @@
-# First part of the script generates the arrays representing 
+# First part of the script prints INDAT and CHARGE
+# parts of input file into individual text files
+import os
+import re
+with open('FMO_Example.inp') as infile, open('output.txt', 'w') as outfile:
+    copy = False
+    a=re.compile(r"\bICHARG\b")
+    b=re.compile(r"\bFRGNAM\b")
+    for line in infile:
+        if a.search(line) != None:
+            copy = True
+        if copy: 
+            outfile.write(line)
+        if b.search(line) != None:
+            copy = False
+with open('output.txt') as infile, open('charg.txt', 'w') as outfile:
+     for line in infile :
+         if 'FRGNAM' not in line:
+            outfile.write(line)
+os.remove('output.txt')
+
+with open('FMO_Example.inp') as infile, open('indat_list_raw.txt', 'w') as outfile:
+    copy = False
+    a=re.compile(r"\bINDAT\b")
+    b=re.compile(r"\bEND\b")
+    for line in infile:
+        if a.search(line) != None:
+            copy = True
+        if copy: 
+            outfile.write(line)
+        if b.search(line) != None:
+            copy = False
+with open('indat_list_raw.txt') as infile, open('indat_list.txt', 'w') as outfile:
+     for line in infile :
+         if 'INDAT' not in line and 'END' not in line:
+            outfile.write(line)
+
+# Second part of the script generates the arrays representing 
 # the SCF type and multiplicities of each fragment based on the array that 
 # represents the charges of each fragment. 
 
@@ -65,7 +102,7 @@ os.remove('charg.txt.tmp')
 os.remove('scf.txt.tmp2')
 os.remove('scf.txt.tmp')
 
-# Second part of the script numerates nonzero fragments.
+# Third part of the script numerates nonzero fragments.
 # Prints indat for negative, positive and zero-charge fragments. 
 
 a1 = open('charg.txt', 'r')
@@ -84,9 +121,9 @@ arr = []
 inp = open ("charg_formated.txt","r")
 #read line into array 
 for line in inp.readlines():
-    # loop over the elemets, split by whitespace
+    # loop over the elements and add spaces
     for i in line.split():
-        # convert to integer and append to the list
+        # append to the list
         arr.append(i)
 f4 = open('fragments_listing.txt', 'w')
 f3 = list(enumerate(arr))
