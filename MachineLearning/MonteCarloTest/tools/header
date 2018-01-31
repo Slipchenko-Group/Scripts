@@ -1,0 +1,3 @@
+ $contrl runtyp=energy coord=fragonly $end
+ $EFRAG
+ coord=cart iscrelec=1 iscrpol=1
