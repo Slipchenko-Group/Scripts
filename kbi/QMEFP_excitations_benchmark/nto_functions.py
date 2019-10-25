@@ -3,6 +3,10 @@ import os
 
 
 def get_n_solv_atoms(geo):
+
+    """Read GAMESS files (fullqm and gas) to figure out the number of
+       atoms in the chromophore and the solvent."""
+
     gas = open(f'{os.getcwd()}/{geo}/gas_{geo}.log').readlines()
     fullqm = open(f'{os.getcwd()}/{geo}/fullqm_{geo}.log').readlines()
     logs = [fullqm, gas]
@@ -19,6 +23,12 @@ def get_n_solv_atoms(geo):
     return(n_atoms)
 
 def get_nto_df(geo):
+
+    """Read QChem output files with NTO analysis and returns dataframe
+       indicating which states have charge transfer to/from solvent:
+       true if there is 0.01 or more charge located on the 
+       electron or electron hole according to the Mulliken pop. 
+       analysis."""
     
     atoms = get_n_solv_atoms(geo)
     na_solute, na_solvent = atoms[1], atoms[2]
