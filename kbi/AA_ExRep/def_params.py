@@ -6,7 +6,34 @@ import os
 
 def get_params(efp):
 
-	efp_lns = open(f'{os.getcwd()}/{efp}', 'r').readlines()
+	#If the two closest distances to lmo are < 2 then bond.
+	#If one of the two closest atoms is more than 2A bohr away then lone pair.	
+	#Assumptions all nitrogens are sp3 (for lone pairs) [must fix]
+	#Two versions for aromatic carbons due to diff localization scheme:
+	    # version 1: treat C-C as reguar C-C and C=C as regular C=C
+	    # version 2: treat each C=C pair as two separate aromatic C-C and each C-C as regular C-C
+
+	params_dict = {\
+	               'CH1' : [0.54, 0.41],
+	               'CC1' : [0.00, 0.00],
+	               'CC2' : [0.11, 0.21],
+	               'CC3' : [0.18, 0.25],
+	               'O0'  : [0.70, 0.50],
+	               'HO1' : [0.40, 0.40],
+	               'CO1' : [0.00, 0.00],
+	               'CO2' : [1.02, 1.16],
+	               'N0'  : [0.11, 0.23],
+	               'N02' : [0.60, 0.40],
+	               'HN1' : [1.60, 0.62],
+	               'CN1' : [0.00, 0.00],
+	               'CN2' : [0.30, 0.80],
+	               'CN3' : [1.90, 0.78],
+	               'ACH1' : [0.54, 0.41],
+	               'ACC1' : [1.92, 0.45],
+	               'ACC2' : [0.00, 0.00]
+	              }
+	
+	efp_lns = open(f'{os.getcwd()}/efparm/{efp}', 'r').readlines()
 	
 	# find coordinates of atoms
 	bohr_line = efp_lns.index(' COORDINATES (BOHR)\n')
@@ -52,13 +79,13 @@ def get_params(efp):
 	    data_dict['A2_dist'].append(min_dists[1])
 	
 	sample = pd.DataFrame(data_dict)[['lmo', 'A1', 'A2', 'A1_dist', 'A2_dist']]
-	sample['id'] = sample.index
+	sample.loc[:,'id'] = sample.index
 	
 	bond = lambda x: 1 if x < 2 else 0
 	
 	sample.loc[:, 'bond'] = sample['A2_dist'].map(bond)
-	sample['A1_num'] = sample[['A1', 'A2']].min(axis=1)
-	sample['A2_num'] = sample[['A1', 'A2']].max(axis=1)
+	sample.loc[:,'A1_num'] = sample[['A1', 'A2']].min(axis=1)
+	sample.loc[:,'A2_num'] = sample[['A1', 'A2']].max(axis=1)
 	
 	lps = sample[sample['bond']==0]
 	types = sample[sample['bond']==1][['A1_num', 'A2_num', 'bond']]\
@@ -66,6 +93,7 @@ def get_params(efp):
 	        .rename(columns={'bond' : 'lmo_type'})
 	
 	# Lone pairs data frame
+	lps = lps.drop('A1_num', axis=1).drop('A2_num', axis=1)
 	lps.loc[:,'A1_num'] = lps['A1']
 	lps.loc[:,'A2_num'] = 0
 	lps = lps[['lmo', 'A1_num', 'A2_num', 'id']]
@@ -88,7 +116,13 @@ def get_params(efp):
 	#lmo_types['category'] = lmo_types[['A1_num', 'A2_num']]\
 	#                        .apply(lambda x: get_cat(x.A1_num, x.A2_num), axis=1)
 	
-	lmo_types['category'] = lmo_types[['A1_num', 'A2_num', 'lmo_type']]\
+	lmo_types.loc[:,'category'] = lmo_types[['A1_num', 'A2_num', 'lmo_type']]\
 	                        .apply(lambda x: get_cat(x.A1_num, x.A2_num, x.lmo_type), axis=1)
+	
+
+	lmo_types.loc[:,'beta_noAr'] = lmo_types['category'].apply(lambda x: params_dict[x][0])
+	lmo_types.loc[:,'alpha_noAr'] = lmo_types['category'].apply(lambda x: params_dict[x][1])
+	lmo_types.loc[:,'beta_v2Ar'] = lmo_types['category'].apply(lambda x: params_dict[x.replace('CC2', 'ACC1')][0])
+	lmo_types.loc[:,'alpha_v2Ar'] = lmo_types['category'].apply(lambda x: params_dict[x.replace('CC2', 'ACC1')][1])
 
 	return(lmo_types)
