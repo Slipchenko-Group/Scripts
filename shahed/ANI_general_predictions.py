@@ -17,7 +17,7 @@ atoms_idx_dict = {0 : 'H', 1 : 'C', 2 : 'N', 3 : 'O'}
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = torchani.models.ANI1x(periodic_table_index=True)[0].to(device)
 
-
+# this function is all Claudia's work
 def forward_prop(species, aev_inp, model0):
     atoms_idx_dict = {0 : 'H', 1 : 'C', 2 : 'N', 3 : 'O'}
     energies = []
