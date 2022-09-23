@@ -4,6 +4,9 @@ import os
 
 # this script converts qchem .out to xyz format to be opened in vmd
 
+# seems like you sometimes need to take the qchem .out file and copy paste it into another file
+# fl.readlines() doesnt like original qchem .out file idk why
+
 data = [fl for fl in os.listdir(os.getcwd()) if fl.endswith('.out') and 'slurm' not in fl]
 path = os.getcwd()
 
