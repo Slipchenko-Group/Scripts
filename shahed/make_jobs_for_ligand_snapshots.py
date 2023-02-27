@@ -26,8 +26,10 @@ for l in ligands:
             shutil.copyfile(f'{path}/files/{ligand}/{j}',f'{name}/{j}')
         try:
             os.chmod(f'{path}/{l}/{name}/submit.sh', 0o775)
+            os.chmod(f'{path}/{l}/{name}/make_tpr.sh', 0o775)
         except:
-            print('job does not exist')
+            print('job(s) does not exist')
         os.chdir(f'{path}/{l}/{name}/')
-        print(subprocess.run([f'{path}/{l}/{name}/submit.sh'], shell=True))
+        subprocess.run([f'{path}/{l}/{name}/make_tpr.sh'], shell=True)
+        subprocess.run([f'{path}/{l}/{name}/submit.sh'], shell=True)
         os.chdir(f'{path}/{l}/')
