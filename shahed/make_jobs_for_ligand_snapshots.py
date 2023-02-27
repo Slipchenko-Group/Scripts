@@ -28,4 +28,6 @@ for l in ligands:
             os.chmod(f'{path}/{l}/{name}/submit.sh', 0o775)
         except:
             print('job does not exist')
+        os.chdir(f'{path}/{l}/{name}/')
         print(subprocess.run([f'{path}/{l}/{name}/submit.sh'], shell=True))
+        os.chdir(f'{path}/{l}/')
