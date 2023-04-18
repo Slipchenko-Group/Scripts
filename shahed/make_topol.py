@@ -90,6 +90,8 @@ for folder in mds:
                 out.write(f'{fragment}  1\n')
             elif ';insert_solvent' in ln and solvent != 'water':
                 out.write(f'{solvent}   600\n')
+            elif ';insert_solvent' in ln and solvent == 'water':
+                out.write('\n')
             else:
                 out.write(ln)
         out.close()
