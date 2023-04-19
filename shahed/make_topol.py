@@ -91,7 +91,7 @@ for folder in mds:
             elif ';insert_solvent' in ln and solvent != 'water':
                 out.write(f'{solvent}   600\n')
             elif ';insert_solvent' in ln and solvent == 'water':
-                out.write('\n')
+                out.write('SOL  600')
             else:
                 out.write(ln)
         out.close()
