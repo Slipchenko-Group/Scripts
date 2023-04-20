@@ -44,6 +44,9 @@ for folder in mds:
                     if len(lnn2.split()) == 0:
                         break
                 break
+    if len(solv_lns) == 0:
+        atomtypes.append(' OW           8      16.00    0.0000  A   3.15061e-01  6.36386e-01\n')
+        atomtypes.append(' HW           1       1.008   0.0000  A   0.00000e+00  0.00000e+00\n')
     prm.write('[ atomtypes ]\n')
     prm.write(';   name  at_num     mass   charge  type        sigma      epsilon\n')
     for a in atomtypes:
@@ -83,7 +86,7 @@ for folder in mds:
                 if solvent != 'water':
                     out.write(f'#include "{solvent}_qforce_resp.itp"\n')
                 if solvent == 'water':
-                    out.write(f'include "amber03.ff/tip3p.itp"')
+                    out.write(f'#include "amber03.ff/tip3p.itp"')
             elif ';insert_system_name' in ln:
                 out.write(f'{fragment} in {solvent}\n')
             elif ';insert_fragment' in ln:
