@@ -8,6 +8,7 @@ import numpy as np
 import os
 
 #template file for neural net, train to label_col, no force training, no batches, no validation
+# thes base scripts were all made by Claudia Viquez Rojas
 species, cspecies, aevs_elecpots, energies, mol_names = make_data(label_col='interaction_energy', subtractE = 0, csv_file='dataset')
 
 device = energies.device
