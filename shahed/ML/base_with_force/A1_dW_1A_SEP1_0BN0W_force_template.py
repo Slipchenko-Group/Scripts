@@ -266,6 +266,22 @@ for _ in range(max_epochs):
     force_loss = (mse(train_forces, computed_forces).sum(dim=(1, 2)) / num_atoms).mean()
     # total loss is going to be the combinatoin of both, but need to scale down the force loss by the force_coefficient
     loss = energy_loss + force_coefficient * force_loss
+
+    # this block here might fix the previous version but idk why. so im leaving it commented out for now
+    # num_atoms = (train_cspecies >= 0).sum(dim=1, dtype=train_energies.dtype)
+    # _, predicted_energies = model_net((train_cspecies, train_aep))
+    # predicted_energies += model_ANI1x((train_species.long(),train_coords)).energies
+    ## compute forces
+    # predicted_forces = -torch.autograd.grad(predicted_energies.sum(), train_coords, create_graph=True, retain_graph=True)[0]
+    ## set up loss functions
+    # energy_loss = (mse(predicted_energies, train_energies) / num_atoms.sqrt()).mean()
+    # force_loss = (mse(train_forces, predicted_forces).sum(dim=(1, 2)) / num_atoms).mean()
+    # loss = energy_loss + force_coefficient * force_loss
+    ## loss = (mse(predicted_energies, train_energies) / num_atoms.sqrt()).mean()
+    # AdamW.zero_grad()
+    # SGD.zero_grad()
+    # loss.backward()
+    
     AdamW.zero_grad()
     SGD.zero_grad()
     loss.backward()
