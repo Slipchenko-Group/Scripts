@@ -306,7 +306,7 @@ for _ in range(max_epochs):
         forces = -torch.autograd.grad((predicted_energies).sum(),coordinates, create_graph=True,retain_graph=True)[0]
         force_loss = (mse(true_forces, forces).sum(dim=(1, 2)) / num_atoms).mean()
         loss = energy_loss + force_coefficient * force_loss
-        loss = energy_loss
+        # loss = energy_loss
         
         
         AdamW.zero_grad()
